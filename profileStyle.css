@@ -1,0 +1,115 @@
+﻿li{
+    color:dodgerblue;
+    font-size: 2rem;
+}
+
+p
+{
+    font-size: 1.2rem;
+
+}
+
+#main{
+    font-size: 5rem;
+}
+
+.demo-class{
+    background-color: greenyellow;
+}
+
+* {
+    font-family: "Comic Sans MS";
+    font-size : 16px;
+    box-sizing:border-box;
+    font-weight: lighter;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: black;
+    color:lawngreen;
+}
+
+h3{
+    color: #770000;
+}
+
+.section-1{
+    background-color: antiquewhite;
+    border: 5px red solid;
+    padding: 0% 20%;
+    margin: 10px;
+}
+
+.section-1 li{
+    font-family: Tahoma;
+    font-weight: 100;
+    font-style: italic;
+    text-decoration: underline;
+    text-transform:uppercase;
+    letter-spacing:0.1cm;
+    list-style: none;
+}
+
+.section-2 {
+    background-color: blue;
+    border-top: 16px green groove;
+    border-bottom: 16px green groove;
+}
+
+.container{
+    width:75%;
+    margin: auto;
+}
+
+ul{
+    width: 300px;
+}
+
+section {
+    margin-left:16px;
+    margin-top:8px;
+    margin-right: 32px;
+    margin-bottom: 4px;
+
+    padding: 8px 16px 4px;
+}
+
+a{
+    text-decoration: underline;
+}
+
+a:hover{
+    text-decoration:underline;
+    color:red;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction:row;
+    width: 100vw;
+    justify-content: space-around;
+}
+
+a:active{
+    color:red;
+
+}
+
+#myform{
+    background-color:gray;
+    color:blanchedalmond;
+    padding:50px;
+    margin:10px;
+}
+
+img{
+    border-radius:100%;
+}
+
+#mform input[type = "text"]{
+    padding:8px;
+    margin-top:10px;
+    margin-bottom:10px;
+    width: 100%;
+}

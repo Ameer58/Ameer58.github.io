@@ -1,52 +1,76 @@
 ﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8" />
-    <meta name=" author" content=" Ameer"/>
+    <meta name=" author" content=" Ameer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My profile</title>
+    <link href="profileStyle.css" rel="stylesheet">
 </head>
 
 <body>
+
     <nav>
-        <ul>
+        <ul class="flex-container">
             <li><a href="index.html">Home</a></li>
             <li><a href="projects.html">My profile</a></li>
+            <li><a href="game.html">Game</a></li>
             <li><a href="http://www.linkedin.com">Linkedin</a></li>
         </ul>
     </nav>
-    <header>  
-        <h1>Ameer</h1>
-        <img src="parrot.jpg" alt="Parrot"/>
-        <hr>
-    </header>
-    <section>
-    <article>
-            <h2>My profile</h2>
-            <p1>Here is <strong>my</strong> profile</p1>
-        </article>
-    <article>
-            <h3>My skills</h3>
-            <ol>
-                <li>C#</li>
-            </ol>
-    </article>
+    <div class="container ">
+        <header>
+            <h1 id="main">Ameer</h1>
+            <img src="./Assets/CAT.jpg" alt="P" />
+            <hr>
+        </header>
+
+
+        <section>
+            <article class="demo-class section-1">
+                <h2>My profile</h2>
+                <p1>Here is <strong>my</strong> profile</p1>
+            </article>
+
+            <article class="section-2">
+                <h3>My skills</h3>
+                <ol>
+                    <li>C#</li>
+                </ol>
+            </article>
+
+            <article class="section-1">
+                <h1>Hobbies</h1>
+                <ul>
+                    <li>Reading</li>
+                    <li>Table tennis</li>
+                    <li>Gaming</li>
+                </ul>
+            </article>
 
         </section>
-        <section>
-         <h3>Education</h3>
-            <form action="https://www.bbc.com" method = "get"
-                target="blank"">
-                <label for="mysearch">Search for:</label> 
-                <input type ="text"id="mysearch"name="q" value="London"/>
-                <input type="submit" value ="Submit"/>
-                </form>
+
+
+
+        <section class="section-2">
+            <h2>Check out the news</h2>
+            <form action="https://www.bbc.com" method="get" target="blank" 
+                  id="myform" >
+                <label for="mysearch">Search for:</label>
+                <input type="text" id="mysearch" name="q" value="London" />
+                <input type="submit" value="Submit" />
+            </form>
         </section>
+
+    </div>
+
         <footer>
             <small>Copyright &#169; Sparta Global 2022 <cite>by A G</cite></small>
         </footer>
 
-   
-    
+
+
 </body>
 </html>
