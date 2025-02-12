@@ -9,6 +9,9 @@ let inrToUsd = 0; // INR to USD rate from oracle
 // Fetch rates from the on-chain oracle
 async function fetchRates() {
     try {
+        document.getElementById("rateLoading").style.display = "block";
+        document.getElementById("rateDisplay").style.display = "none";
+
         if (!tronWeb) throw new Error("TronWeb not initialized.");
 
         const oracleContract = await tronWeb.contract().at(oracleContractAddress);
@@ -27,11 +30,13 @@ async function fetchRates() {
         if (usdtToTrxElement) {
             usdtToTrxElement.innerText = (1 / trxToUsd).toFixed(2) + " TRX";
         }
+
+        document.getElementById("rateLoading").style.display = "none";
+        document.getElementById("rateDisplay").style.display = "block";
     } catch (error) {
         console.error("Error fetching rates from oracle: ", error);
-        // Fallback values
-        trxToUsd = 0.08; // Default TRX/USD rate
-        inrToUsd = 0.012; // Default INR/USD rate
+        document.getElementById("rateLoading").style.display = "none";
+        document.getElementById("rateDisplay").style.display = "block";
     }
 }
 
@@ -192,6 +197,25 @@ function updateTokenAmount() {
     document.getElementById("buyWithTRX").innerText = "Buy with TRX (" + (amount / trxToUsd).toFixed(2) + " TRX)";
     document.getElementById("buyWithUSDT").innerText = "Buy with USDT (" + (amount).toFixed(2) + " USDT)";
 }
+
+// Claim Vested Tokens
+async function claimVestedTokens() {
+    try {
+        if (!tronWeb) throw new Error("TronWeb not initialized.");
+        const contract = await tronWeb.contract().at(presaleContractAddress);
+
+        showProcessingMessage();
+        await contract.claimVestedTokens().send();
+        alert("Vested tokens claimed successfully!");
+    } catch (error) {
+        alert("Error claiming vested tokens: " + error.message);
+    } finally {
+        hideProcessingMessage();
+    }
+}
+
+// Attach event listener
+document.getElementById("claimVestedTokens").addEventListener("click", claimVestedTokens);
 
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
