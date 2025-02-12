@@ -195,6 +195,68 @@ input[type="number"] {
     transform: translateY(-10px);
 }
 
+/* Vesting Info Tooltip */
+.vesting-info {
+    font-size: 0.9em;
+    color: #666;
+    margin: 10px 0;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Claim Section */
+.claim-section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.claim-container {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#claimVestedTokens {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#claimVestedTokens:hover {
+    background-color: #218838;
+}
+
 /* Footer */
 footer {
     background: #1a1a1a;
