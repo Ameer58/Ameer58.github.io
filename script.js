@@ -1,4 +1,4 @@
-const presaleContractAddress = "TUAwdBWQEibBxp8AwCfL7kNZWEZDghMfsr"; // Replace with actual address
+const presaleContractAddress = "TWt28HLcohkAYEmWSkmDcrjLrU7ZUzt4DV"; // Replace with actual address
 const usdtContractAddress = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // Replace with actual address
 const oracleContractAddress = "TGkLqNT25t6hiu3H4vdmLA3yqkJvZ8QQHT"; // Replace with actual oracle address
 
