@@ -1,63 +1,37 @@
-const presaleContractAddress = "TPNnCKzmr8ytTBmraBR46Cc1aA1HCzx6Bg"; // Replace with actual address
+const presaleContractAddress = "TNhHZKdahzxgUSMkkJFQfJgFrcsvfnHPFU"; // Replace with actual address
 const usdtContractAddress = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // Replace with actual address
-const irtContractAddress = "TLhwe7cYFV7qrT3Vs4sB3fsjJtamZMh8BH"; // Replace with actual address
+const oracleContractAddress = "TGkLqNT25t6hiu3H4vdmLA3yqkJvZ8QQHT"; // Replace with actual oracle address
 
 let tronWeb;
-let exchangeRate = 82.5; // Default USD to INR exchange rate
-let trxToUsd = 0.08; // Default TRX to USD rate
-const coingeckoApiKey = "CG-PbnWHmZg4QwzACdFLmS1EZmd"; // Replace with your CoinGecko API key
+let trxToUsd = 0; // TRX to USD rate from oracle
+let inrToUsd = 0; // INR to USD rate from oracle
 
-// Fetch TRX to USD rate using CoinGecko API
-async function fetchTRXtoUSD() {
+// Fetch rates from the on-chain oracle
+async function fetchRates() {
     try {
-        const trxResponse = await fetch(
-            `https://api.coingecko.com/api/v3/simple/price?ids=tron&vs_currencies=usd&x_cg_demo_api_key=${coingeckoApiKey}`
-        );
-        const trxData = await trxResponse.json();
-        if (trxData.tron && trxData.tron.usd) {
-            return trxData.tron.usd; // Return TRX/USD rate
-        }
-        throw new Error("Failed to fetch TRX rate.");
-    } catch (error) {
-        console.error("Error fetching TRX rate: ", error);
-        return 0.08; // Fallback TRX/USD rate
-    }
-}
+        if (!tronWeb) throw new Error("TronWeb not initialized.");
 
-// Fetch and update exchange rates
-async function updateExchangeRates() {
-    try {
-        // Fetch USD to INR rate from ExchangeRate-API
-        const response = await fetch("https://open.er-api.com/v6/latest/USD");
-        const data = await response.json();
-        if (data.result === "success" && data.rates && data.rates.INR) {
-            exchangeRate = data.rates.INR; // 1 USDT = X IRT
-            const usdtToIrtElement = document.getElementById("usdtToIrtRate");
-            if (usdtToIrtElement) {
-                usdtToIrtElement.innerText = exchangeRate.toFixed(2) + " IRT";
-            }
-        } else {
-            throw new Error("Failed to fetch USD to INR rate.");
-        }
+        const oracleContract = await tronWeb.contract().at(oracleContractAddress);
+        const rates = await oracleContract.getRates().call();
 
-        // Fetch TRX to USD rate
-        trxToUsd = await fetchTRXtoUSD();
-        const usdtToTrx = 1 / trxToUsd; // 1 USDT = Z TRX
-        const usdtToTrxElement = document.getElementById("usdtToTrxRate");
-        if (usdtToTrxElement) {
-            usdtToTrxElement.innerText = usdtToTrx.toFixed(2) + " TRX";
-        }
-    } catch (error) {
-        console.error("Error fetching exchange rates: ", error);
-        // Fallback values
+        trxToUsd = rates[0] / 1e6; // TRX/USD rate (scaled by 1e6)
+        inrToUsd = rates[1] / 1e6; // INR/USD rate (scaled by 1e6)
+
+        // Update UI with rates
         const usdtToIrtElement = document.getElementById("usdtToIrtRate");
         if (usdtToIrtElement) {
-            usdtToIrtElement.innerText = exchangeRate.toFixed(2) + " IRT";
+            usdtToIrtElement.innerText = (1 / inrToUsd).toFixed(2) + " IRT";
         }
+
         const usdtToTrxElement = document.getElementById("usdtToTrxRate");
         if (usdtToTrxElement) {
             usdtToTrxElement.innerText = (1 / trxToUsd).toFixed(2) + " TRX";
         }
+    } catch (error) {
+        console.error("Error fetching rates from oracle: ", error);
+        // Fallback values
+        trxToUsd = 0.08; // Default TRX/USD rate
+        inrToUsd = 0.012; // Default INR/USD rate
     }
 }
 
@@ -156,7 +130,6 @@ async function buyTokensWithUSDT() {
         validateContribution(amount);
 
         const usdtAmount = tronWeb.toSun(amount);
-        const irtAmount = usdtAmount * exchangeRate;
 
         // Show processing message
         showProcessingMessage();
@@ -165,7 +138,7 @@ async function buyTokensWithUSDT() {
         await usdtContract.approve(presaleContractAddress, usdtAmount).send();
 
         // Buy IRT tokens
-        await contract.buyIRT(usdtAmount, irtAmount).send();
+        await contract.buyWithUSDT(usdtAmount).send();
 
         alert("Transaction successful!");
         updateTokenAmount();
@@ -192,23 +165,11 @@ async function buyTokensWithTRX() {
         // Convert USDT amount to TRX
         const trxAmount = Math.floor(tronWeb.toSun(amount / trxToUsd)); // Ensure integer
 
-        // Convert IRT to 6 decimals (multiply by 10^6)
-        const irtAmount = Math.floor(amount * exchangeRate * 10**6); // Convert to integer
-
-        // Debugging logs
-        console.log(`USDT Amount: ${amount}`);
-        console.log(`TRX to be sent (callValue): ${trxAmount} Sun`);
-        console.log(`IRT Tokens to receive: ${irtAmount} Smallest Units`);
-
-        // Check if values are valid before sending transaction
-        if (isNaN(trxAmount) || trxAmount <= 0) throw new Error("Invalid TRX amount.");
-        if (isNaN(irtAmount) || irtAmount <= 0) throw new Error("Invalid IRT amount.");
-
         // Show processing message
         showProcessingMessage();
 
         // Send TRX to contract
-        const transaction = await contract.buyWithTRX(irtAmount).send({ callValue: trxAmount });
+        const transaction = await contract.buyWithTRX().send({ callValue: trxAmount });
 
         console.log("Transaction Successful:", transaction);
         alert("Transaction successful!");
@@ -225,38 +186,11 @@ async function buyTokensWithTRX() {
 // Update token amount based on input
 function updateTokenAmount() {
     let amount = parseFloat(document.getElementById("investmentAmount").value) || 0;
-    let irtPerUsdt = exchangeRate;  // Use dynamic rate
+    let irtPerUsdt = 1 / inrToUsd;  // Use dynamic rate from oracle
 
     document.getElementById("tokensToReceive").innerText = (amount * irtPerUsdt).toFixed(2) + " IRT";
     document.getElementById("buyWithTRX").innerText = "Buy with TRX (" + (amount / trxToUsd).toFixed(2) + " TRX)";
     document.getElementById("buyWithUSDT").innerText = "Buy with USDT (" + (amount).toFixed(2) + " USDT)";
-}
-
-// Show rate on hover
-function showRate(currency) {
-    let rate = currency === "trx" ? `1 TRX = ${trxToUsd.toFixed(2)} USDT` : `1 USDT = ${exchangeRate.toFixed(2)} IRT`;
-    document.getElementById("rateInfo").innerText = rate;
-}
-
-// Hide rate on mouseout
-function hideRate() {
-    document.getElementById("rateInfo").innerText = "Hover over a button to see the exchange rate.";
-}
-
-// Countdown Timer (2.5 months)
-function updateCountdown() {
-    let presaleEnd = new Date();
-    presaleEnd.setMonth(presaleEnd.getMonth() + 2, presaleEnd.getDate() + 15);
-
-    let now = new Date();
-    let timeLeft = presaleEnd - now;
-
-    let days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-    let hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
-    let minutes = Math.floor((timeLeft / 1000 / 60) % 60);
-    let seconds = Math.floor((timeLeft / 1000) % 60);
-
-    document.getElementById("countdownTimer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
 // Initialize when DOM is loaded
@@ -266,9 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("buyWithTRX").addEventListener("click", buyTokensWithTRX);
     document.getElementById("buyWithUSDT").addEventListener("click", buyTokensWithUSDT);
 
-    // Initialize countdown and exchange rates
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-    updateExchangeRates();
-    setInterval(updateExchangeRates, 60000); // Update every 60 seconds
+    // Initialize exchange rates
+    fetchRates();
+    setInterval(fetchRates, 60000); // Update every 60 seconds
 });
