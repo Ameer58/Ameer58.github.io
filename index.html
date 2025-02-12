@@ -54,19 +54,29 @@
     </section>
 
     <!-- 🔹 BUY NOW -->
-    <section class="buy-section">
-        <h2>Buy IRT Tokens</h2>
-        <div class="buy-container">
-            <label for="investmentAmount">Enter Investment Amount:</label>
-            <input type="number" id="investmentAmount" placeholder="Amount in USDT" oninput="updateTokenAmount()">
-            <p>You'll Receive: <strong id="tokensToReceive">0 IRT</strong></p>
-            <div class="button-container">
-                <button id="buyWithTRX" class="trx-btn" onmouseover="showRate('trx')" onmouseout="hideRate()">Buy with TRX</button>
-                <button id="buyWithUSDT" class="usdt-btn" onmouseover="showRate('usdt')" onmouseout="hideRate()">Buy with USDT</button>
-            </div>
-            <p class="exchange-rate" id="rateInfo">Hover over a button to see the exchange rate.</p>
+    <!-- 🔹 BUY NOW -->
+<section class="buy-section">
+    <h2>Buy IRT Tokens</h2>
+    <div class="buy-container">
+        <label for="investmentAmount">Enter Investment Amount:</label>
+        <input type="number" id="investmentAmount" placeholder="Amount in USDT" oninput="updateTokenAmount()">
+        <p>You'll Receive: <strong id="tokensToReceive">0 IRT</strong></p>
+        <p class="vesting-info">
+            <strong>Vesting:</strong> 25% upfront, 75% vested over 3 months.
+            <span class="tooltip">ℹ️
+                <span class="tooltiptext">You will receive 25% of your tokens immediately, and the remaining 75% will be vested over 3 months.</span>
+            </span>
+        </p>
+        <div class="button-container">
+            <button id="buyWithTRX" class="trx-btn" onmouseover="showRate('trx')" onmouseout="hideRate()">Buy with TRX</button>
+            <button id="buyWithUSDT" class="usdt-btn" onmouseover="showRate('usdt')" onmouseout="hideRate()">Buy with USDT</button>
         </div>
-    </section>
+        <p class="exchange-rate" id="rateInfo">
+    <span id="rateLoading">Loading rates...</span>
+    <span id="rateDisplay" style="display: none;">Hover over a button to see the exchange rate.</span>
+</p>
+    </div>
+</section>
 
     <!-- 🔹 ROADMAP SECTION -->
     <section id="roadmap" class="roadmap">
@@ -90,6 +100,15 @@
             </div>
         </div>
     </section>
+
+    <!-- 🔹 CLAIM VESTED TOKENS -->
+<section class="claim-section">
+    <h2>Claim Vested Tokens</h2>
+    <div class="claim-container">
+        <p>You have <strong id="vestedTokens">0 IRT</strong> available to claim.</p>
+        <button id="claimVestedTokens">Claim Tokens</button>
+    </div>
+</section>
 
     <!-- 🔹 FOOTER -->
     <footer id="contact">
